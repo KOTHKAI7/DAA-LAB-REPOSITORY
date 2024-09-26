@@ -1,0 +1,18 @@
+sorting-algorithms-and-matrix-multiplication
+│
+├── quick-sort/
+│   ├── quick_sort.py         # Python implementation of Quick Sort
+│   ├── README.md             # Explanation of Quick Sort with time complexity, etc.
+│   └── test_quick_sort.py    # Test cases for Quick Sort
+│
+├── merge-sort/
+│   ├── merge_sort.py         # Python implementation of Merge Sort
+│   ├── README.md             # Explanation of Merge Sort with time complexity, etc.
+│   └── test_merge_sort.py    # Test cases for Merge Sort
+│
+├── strassen-multiplication/
+│   ├── strassen.py           # Python implementation of Strassen's Matrix Multiplication
+│   ├── README.md             # Explanation of Strassen's algorithm with time complexity
+│   └── test_strassen.py      # Test cases for Strassen's Matrix Multiplication
+│
+└── README.md                 # Overview of the repository
