@@ -1,0 +1,48 @@
+#include <stdio.h>
+
+// Function to print a subset
+void printSubset(int subset[], int subsetSize) {
+    printf("{ ");
+    for (int i = 0; i < subsetSize; i++) {
+        printf("%d ", subset[i]);
+    }
+    printf("}\n");
+}
+
+// Recursive function to find subsets that sum up to the target
+void sumOfSubset(int numbers[], int n, int target_sum, int subset[], int subsetSize, int subsetSum, int index) {
+    // If the subset sum is equal to the target sum, we found a valid subset
+    if (subsetSum == target_sum) {
+        printSubset(subset, subsetSize);  // Print the current subset
+        return;
+    }
+
+    // If the subset sum exceeds the target sum or we reach the end of numbers, stop
+    if (subsetSum > target_sum || index == n) {
+        return;
+    }
+
+    // Include the current number in the subset
+    subset[subsetSize] = numbers[index];
+    sumOfSubset(numbers, n, target_sum, subset, subsetSize + 1, subsetSum + numbers[index], index + 1);
+
+    // Exclude the current number from the subset and recurse
+    sumOfSubset(numbers, n, target_sum, subset, subsetSize, subsetSum, index + 1);
+}
+
+// Wrapper function to initialize and call the sumOfSubset function
+void findSubsets(int numbers[], int n, int target_sum) {
+    int subset[n];  // Temporary array to store current subset
+    printf("Subsets that sum to %d:\n", target_sum);
+    sumOfSubset(numbers, n, target_sum, subset, 0, 0, 0);
+}
+
+// Main function to test the sum of subset implementation
+int main() {
+    int numbers[] = {3, 34, 4, 12, 5, 2};
+    int n = sizeof(numbers) / sizeof(numbers[0]);
+    int target_sum = 9;
+    
+    findSubsets(numbers, n, target_sum);
+    return 0;
+}
