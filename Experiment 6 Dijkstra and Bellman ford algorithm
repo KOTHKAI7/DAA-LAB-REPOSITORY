@@ -1,0 +1,295 @@
+#include <stdio.h> 
+
+#include <stdlib.h> 
+
+#include <limits.h> 
+
+  
+
+#define INF INT_MAX 
+
+  
+
+// Function prototypes 
+
+void dijkstra(int n, int graph[n][n], int src); 
+
+void bellmanFord(int n, int graph[n][3], int edges, int src); 
+
+void printDistances(int dist[], int n); 
+
+  
+
+// Dijkstra's Algorithm 
+
+void dijkstra(int n, int graph[n][n], int src) { 
+
+    int dist[n], visited[n]; 
+
+  
+
+    // Initialize distances and visited array 
+
+    for (int i = 0; i < n; i++) { 
+
+        dist[i] = INF; 
+
+        visited[i] = 0; 
+
+    } 
+
+  
+
+    dist[src] = 0; 
+
+  
+
+    for (int count = 0; count < n - 1; count++) { 
+
+        int u = -1; 
+
+  
+
+        // Find the vertex with the minimum distance 
+
+        for (int i = 0; i < n; i++) { 
+
+            if (!visited[i] && (u == -1 || dist[i] < dist[u])) { 
+
+                u = i; 
+
+            } 
+
+        } 
+
+  
+
+        visited[u] = 1; 
+
+  
+
+        // Update distances of neighbors 
+
+        for (int v = 0; v < n; v++) { 
+
+            if (!visited[v] && graph[u][v] && dist[u] != INF && dist[u] + graph[u][v] < dist[v]) { 
+
+                dist[v] = dist[u] + graph[u][v]; 
+
+            } 
+
+        } 
+
+    } 
+
+  
+
+    printf("Dijkstra's Algorithm Result:\n"); 
+
+    printDistances(dist, n); 
+
+} 
+
+  
+
+// Bellman-Ford Algorithm 
+
+void bellmanFord(int n, int graph[n][3], int edges, int src) { 
+
+    int dist[n]; 
+
+  
+
+    // Initialize distances 
+
+    for (int i = 0; i < n; i++) { 
+
+        dist[i] = INF; 
+
+    } 
+
+  
+
+    dist[src] = 0; 
+
+  
+
+    // Relax all edges |V| - 1 times 
+
+    for (int i = 1; i <= n - 1; i++) { 
+
+        for (int j = 0; j < edges; j++) { 
+
+            int u = graph[j][0]; 
+
+            int v = graph[j][1]; 
+
+            int weight = graph[j][2]; 
+
+  
+
+            if (dist[u] != INF && dist[u] + weight < dist[v]) { 
+
+                dist[v] = dist[u] + weight; 
+
+            } 
+
+        } 
+
+    } 
+
+  
+
+    // Check for negative-weight cycles 
+
+    for (int j = 0; j < edges; j++) { 
+
+        int u = graph[j][0]; 
+
+        int v = graph[j][1]; 
+
+        int weight = graph[j][2]; 
+
+  
+
+        if (dist[u] != INF && dist[u] + weight < dist[v]) { 
+
+            printf("Graph contains a negative-weight cycle.\n"); 
+
+            return; 
+
+        } 
+
+    } 
+
+  
+
+    printf("Bellman-Ford Algorithm Result:\n"); 
+
+    printDistances(dist, n); 
+
+} 
+
+  
+
+void printDistances(int dist[], int n) { 
+
+    for (int i = 0; i < n; i++) { 
+
+        if (dist[i] == INF) { 
+
+            printf("Vertex %d: INF\n", i); 
+
+        } else { 
+
+            printf("Vertex %d: %d\n", i, dist[i]); 
+
+        } 
+
+    } 
+
+} 
+
+  
+
+int main() { 
+
+    int n, edges; 
+
+  
+
+    printf("Enter the number of vertices: "); 
+
+    scanf("%d", &n); 
+
+  
+
+    int choice; 
+
+    printf("Choose graph representation:\n"); 
+
+    printf("1. Adjacency Matrix (for Dijkstra)\n"); 
+
+    printf("2. Edge List (for Bellman-Ford)\n"); 
+
+    scanf("%d", &choice); 
+
+  
+
+    if (choice == 1) { 
+
+        int graph[n][n]; 
+
+  
+
+        printf("Enter the adjacency matrix (use 0 for no edge, positive weight otherwise):\n"); 
+
+        for (int i = 0; i < n; i++) { 
+
+            for (int j = 0; j < n; j++) { 
+
+                scanf("%d", &graph[i][j]); 
+
+                if (i != j && graph[i][j] == 0) { 
+
+                    graph[i][j] = INF; 
+
+                } 
+
+            } 
+
+        } 
+
+  
+
+        int src; 
+
+        printf("Enter the source vertex: "); 
+
+        scanf("%d", &src); 
+
+  
+
+        dijkstra(n, graph, src); 
+
+    } else if (choice == 2) { 
+
+        printf("Enter the number of edges: "); 
+
+        scanf("%d", &edges); 
+
+  
+
+        int graph[edges][3]; 
+
+        printf("Enter the edges (format: u v weight):\n"); 
+
+        for (int i = 0; i < edges; i++) { 
+
+            scanf("%d %d %d", &graph[i][0], &graph[i][1], &graph[i][2]); 
+
+        } 
+
+  
+
+        int src; 
+
+        printf("Enter the source vertex: "); 
+
+        scanf("%d", &src); 
+
+  
+
+        bellmanFord(n, graph, edges, src); 
+
+    } else { 
+
+        printf("Invalid choice.\n"); 
+
+    } 
+
+  
+
+    return 0; 
+
+} 
