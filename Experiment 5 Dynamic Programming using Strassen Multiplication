@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <limits.h>
+
+// Function to print the optimal parenthesization
+void printOptimalParenthesis(int i, int j, int n, int *brackets, char name) {
+    // Base case: only one matrix
+    if (i == j) {
+        printf("%c", name++);
+        return;
+    }
+
+    printf("(");
+
+    // Recursively put brackets around subexpressions
+    printOptimalParenthesis(i, *((brackets + i * n) + j), n, brackets, name);
+    printOptimalParenthesis(*((brackets + i * n) + j) + 1, j, n, brackets, name);
+
+    printf(")");
+}
+
+// Function to implement the matrix chain multiplication
+void matrixChainMultiplication(int p[], int n) {
+    // m[i][j] will store the minimum number of scalar multiplications required to multiply A[i:j]
+    int m[n][n];
+    // brackets[i][j] will store the index at which the product is split to minimize cost
+    int brackets[n][n];
+
+    // Initial cost for multiplying one matrix is 0
+    for (int i = 1; i < n; i++) {
+        m[i][i] = 0;
+    }
+
+    // l is the chain length (subproblem size)
+    for (int l = 2; l < n; l++) { // l is the chain length
+        for (int i = 1; i < n - l + 1; i++) {
+            int j = i + l - 1;
+            m[i][j] = INT_MAX;
+
+            for (int k = i; k < j; k++) {
+                // Calculate q, the number of scalar multiplications required to multiply the matrices
+                int q = m[i][k] + m[k + 1][j] + p[i - 1] * p[k] * p[j];
+                if (q < m[i][j]) {
+                    m[i][j] = q;  // Update minimum
+                    brackets[i][j] = k;  // Store the index k
+                }
+            }
+        }
+    }
+
+    // Print the minimum cost and the optimal parenthesization
+    printf("Minimum number of multiplications is: %d\n", m[1][n - 1]);
+    printf("Optimal Parenthesization is: ");
+    char name = 'A';
+    printOptimalParenthesis(1, n - 1, n, (int *)brackets, name);
+    printf("\n");
+}
+
+int main() {
+    // Example input: dimensions of matrices
+    // For three matrices A1 (30x35), A2 (35x15), A3 (15x5), A4 (5x10), A5 (10x20), A6 (20x25)
+    int arr[] = {30, 35, 15, 5, 10, 20, 25};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    matrixChainMultiplication(arr, size);
+
+    return 0;
+}
